@@ -1,4 +1,5 @@
 // +heroku goVersion go1.14.1
+// +heroku install github.com/golang-migrate/migrate/v4 github.com/golang-migrate/migrate/v4/cmd/migrate
 
 module github.com/lmduc/contest-stats
 
