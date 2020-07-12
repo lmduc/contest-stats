@@ -7,9 +7,11 @@ import (
 )
 
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
+	if GetEnv("GO_ENV") == "development" {
+		err := godotenv.Load()
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
