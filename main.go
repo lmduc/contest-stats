@@ -4,10 +4,14 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/lmduc/contest-stats/controllers"
 	"github.com/lmduc/contest-stats/database"
 	"github.com/lmduc/contest-stats/env"
+	"github.com/lmduc/contest-stats/util"
 	"github.com/sirupsen/logrus"
 )
 
@@ -25,8 +29,16 @@ var (
 	userController = controllers.NewUser(&cfgController)
 )
 
+func init() {
+	pgURL := env.GetEnv("DATABASE_URL")
+	m, err := migrate.New("file://db/migrations", pgURL)
+	util.PanicIfError(err)
+	m.Up()
+}
+
 func main() {
 	db.Connect()
+	db.Connection().AutoMigrate()
 	defer db.Close()
 
 	r := gin.Default()
